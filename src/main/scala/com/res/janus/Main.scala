@@ -19,50 +19,52 @@ object Main {
   /**
    * @param args the command line arguments
    */
-  def main(args: Array[String]): Unit = {
-    if (false) {
-      //    val filename = "C:\\Users\\bof\\Downloads\\bcsstk32.mtx"
-      //    val filename = "C:\\Users\\bof\\Downloads\\bcsstk18.mtx\\bcsstk18.mtx"
-      val filename = "C:\\Users\\bof\\Downloads\\bcsstk14.mtx\\bcsstk14.mtx"
-      val m = new CSVSparseMatrix(filename, true)
-
-      val lu = LU(m)
-
-      println("max: " + abs(m.dense - lu.l.dense * lu.u.dense).max)
-    }
-
+  def main(args: Array[String]) {
+    val runWithoutSpark = true
+    val runUltraSimpleMatrix = true
+    
+    
     // ----------- ultra simple matrix
-    //    val vals = List(
-    //      ((1L, 1L), 1.0),
-    //      ((7L, 1L), 2.0),
-    //      ((8L, 1L), 3.0),
-    //      ((9L, 1L), 4.0),
-    //      ((2L, 2L), 5.0),
-    //      ((4L, 2L), 6.0),
-    //      ((6L, 2L), 7.0),
-    //      ((3L, 3L), 8.0),
-    //      ((5L, 3L), 9.0),
-    //      ((8L, 3L), 1.0),
-    //      ((4L, 4L), 2.0),
-    //      ((8L, 4L), 3.0),
-    //      ((9L, 4L), 4.0),
-    //      ((5L, 5L), 5.0),
-    //      ((6L, 5L), 6.0),
-    //      ((8L, 5L), 7.0),
-    //      ((6L, 6L), 8.0),
-    //      ((9L, 6L), 9.0),
-    //      ((7L, 7L), 1.0),
-    //      ((8L, 7L), 2.0),
-    //      ((9L, 7L), 3.0),
-    //      ((8L, 8L), 4.0),
-    //      ((9L, 9L), 5.0)
-    //    )
-    //
-    //    val m = new MemorySparseMatrix(vals, true)
+    val vals = List(
+      ((1L, 1L), 1.0),
+      ((7L, 1L), 2.0),
+      ((8L, 1L), 3.0),
+      ((9L, 1L), 4.0),
+      ((2L, 2L), 5.0),
+      ((4L, 2L), 6.0),
+      ((6L, 2L), 7.0),
+      ((3L, 3L), 8.0),
+      ((5L, 3L), 9.0),
+      ((8L, 3L), 1.0),
+      ((4L, 4L), 2.0),
+      ((8L, 4L), 3.0),
+      ((9L, 4L), 4.0),
+      ((5L, 5L), 5.0),
+      ((6L, 5L), 6.0),
+      ((8L, 5L), 7.0),
+      ((6L, 6L), 8.0),
+      ((9L, 6L), 9.0),
+      ((7L, 7L), 1.0),
+      ((8L, 7L), 2.0),
+      ((9L, 7L), 3.0),
+      ((8L, 8L), 4.0),
+      ((9L, 9L), 5.0))
+
+    val m1 = new MemorySparseMatrix(vals, true)
 
     // ------------------- moderately complicated matrix
-    val filename = "C:\\Users\\bof\\Downloads\\bcsstk14.mtx\\bcsstk14.mtx"
-    val m = new CSVSparseMatrix(filename, true)
+    //    val filename = "C:\\Users\\bof\\Downloads\\bcsstk32.mtx"
+    //    val filename = "C:\\Users\\bof\\Downloads\\bcsstk18.mtx\\bcsstk18.mtx"    
+    val filename = "test-data/bcsstk14.mtx"
+    val m2 = new CSVSparseMatrix(filename, true)
+    
+    val m = if( runUltraSimpleMatrix ) m1 else m2 // select one matrix
+    
+    if (runWithoutSpark) {
+      val lu = LU(m)
+      println("l-inf error norm: " + abs(m.dense - lu.l.dense * lu.u.dense).max)
+      return
+    }
 
     val method = new EliminationMethod(m)
 
@@ -131,7 +133,8 @@ object Main {
       .cache
 
     println(solved.vertices.filter { case (id, data) => data._1 == 0 }.count)
-    if (true) {
+    if (false) {
+      // stop here for a partial run
       sc.stop
       return
     }
@@ -155,16 +158,20 @@ object Main {
       ++ lDiagonal, false)
     val lu = new LUFactorization(l, u)
 
-    println(abs(m.dense - lu.l.dense * lu.u.dense).max)
+    println("l-inf error norm: " + abs(m.dense - lu.l.dense * lu.u.dense).max)
 
     //    assemblyTree.vertices.foreach(println(_))
     //    assemblyTree.edges.foreach(println(_))
 
     // actual work ends here
     if (true) {
+      // stop here for the end of spark example
       sc.stop
       return
     }
+    
+    // here is the original GraphX example just to get in touch with sintaxes
+    
     // Create an RDD for the vertices
     val users: RDD[(VertexId, (String, String))] =
       sc.parallelize(Array((3L, ("rxin", "student")), (7L, ("jgonzal", "postdoc")),
