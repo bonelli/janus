@@ -10,9 +10,9 @@ lazy val root = (project in file(".")).
             // native libraries greatly improve performance, but increase jar sizes.
             "org.scalanlp" %% "breeze-natives" % "0.10",
             "org.apache.spark" %% "spark-core" % "1.4.1",
-            "org.apache.spark" %% "spark-graphx" % "1.4.1"
+            "org.apache.spark" %% "spark-graphx" % "1.4.1",
             // test libraries
-            // ,"com.novocode" %% "junit-interface" % "0.11" % "test"
+			"com.novocode" % "junit-interface" % "0.11" % "test"
         ),
         resolvers ++= Seq(
             // other resolvers here

@@ -20,8 +20,8 @@ object Main {
    * @param args the command line arguments
    */
   def main(args: Array[String]) {
-    val runWithoutSpark = true
-    val runUltraSimpleMatrix = true
+    val runWithoutSpark = false
+    val runUltraSimpleMatrix = false
     
     
     // ----------- ultra simple matrix
@@ -68,7 +68,6 @@ object Main {
 
     val method = new EliminationMethod(m)
 
-    val logFile = "C:\\Users\\bof\\Downloads\\2 - 7 - Lecture 1.7 - Tail Recursion (12-32).txt" // Should be some file on your system
     val conf = new SparkConf()
       .setAppName("Simple Application")
       .setMaster("local[*]")
@@ -88,8 +87,7 @@ object Main {
     }
 
     //    solveTree.vertices.foreach(println(_))
-    class NeighborsContributions(val amount: Long, val front: FrontContribution) extends Serializable
-
+    
     // start solving
     val unsolvedFronts: Graph[(Long, FrontContribution), Unit] = solveTree.mapVertices((p, unsolvedChildren) => (unsolvedChildren, EmptyFrontContribution))
     val solved = unsolvedFronts
