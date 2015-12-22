@@ -16,7 +16,10 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 /bin/
-
-.classpath
 .cache-main
-*.cache-tests
+.cache-tests
+.classpath
+.project
+project
+.settings
+.settings/*
