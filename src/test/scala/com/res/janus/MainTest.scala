@@ -16,6 +16,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.graphx._
 import org.apache.spark._
 import org.apache.spark.rdd.RDD
+import org.apache.spark.storage.StorageLevel
 
 class MainTest {
 
@@ -93,7 +94,7 @@ class MainTest {
             }
           },
           (child1Contribution, child2Contribution) => new NeighborsContributions(child1Contribution.amount + child2Contribution.amount, child1Contribution.front + child2Contribution.front))
-      .cache
+      .persist(StorageLevel.MEMORY_AND_DISK_SER)
 
     println(solved.vertices.filter { case (id, data) => data._1 == 0 }.count)
 
