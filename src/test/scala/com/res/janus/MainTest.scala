@@ -36,7 +36,7 @@ class MainTest {
 
     val conf = new SparkConf()
       .setAppName("Simple Application")
-      .setMaster("local[*]")
+      .setMaster("local[1]")
 
     val sc = new SparkContext(conf)
 
