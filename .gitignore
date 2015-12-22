@@ -20,6 +20,5 @@ project/plugins/project/
 .cache-tests
 .classpath
 .project
-project
 .settings
 .settings/*
